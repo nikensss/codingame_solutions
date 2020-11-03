@@ -7,7 +7,7 @@
  **/
 
 // game loop
-while (inGame()) {
+while (isInGame()) {
   const heights = [];
   for (let i = 0; i < 8; i++) {
     heights.push(parseInt(readline())); // represents the height of one mountain.
@@ -19,6 +19,6 @@ while (inGame()) {
   console.log(heights.findIndex((h) => h === highest));
 }
 
-function inGame() {
-  return Math.random() > 0.5;
+function isInGame() {
+  return true;
 }
