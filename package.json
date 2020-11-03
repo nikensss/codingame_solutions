@@ -1,0 +1,31 @@
+{
+  "name": "codingame_solutions",
+  "version": "0.0.3",
+  "description": "My solutions to the problems solved from www.codingame.com",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --fix 'src/**/*.js'",
+    "pretty": "prettier --write src/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikensss/codingame_solutions.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nikensss/codingame_solutions/issues"
+  },
+  "homepage": "https://github.com/nikensss/codingame_solutions#readme",
+  "engines": {
+    "node": "14.15.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "2.1.2"
+  }
+}
