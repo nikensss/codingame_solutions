@@ -37,6 +37,7 @@ function isNode(character) {
 
 function horizontalNeighbourCoordinates(rows, row, column) {
   const neighbour = rows[row].slice(column + 1).findIndex((n) => n === NODE);
+
   if (neighbour === -1) return NOT_FOUND;
 
   return ' ' + (neighbour + column + 1) + ' ' + row;
