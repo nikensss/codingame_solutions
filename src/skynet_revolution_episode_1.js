@@ -79,10 +79,10 @@ class Path {
   }
 }
 
-const initVals = readline().split(' ');
-const N = parseInt(initVals[0]); // the total number of nodes in the level, including the gateways
-const L = parseInt(initVals[1]); // the number of links
-const E = parseInt(initVals[2]); // the number of exit gateways
+const initValues = readline().split(' ');
+const N = parseInt(initValues[0]); // the total number of nodes in the level, including the gateways
+const L = parseInt(initValues[1]); // the number of links
+const E = parseInt(initValues[2]); // the number of exit gateways
 
 const mesh = new Mesh();
 for (let i = 0; i < L; i++) {
@@ -106,12 +106,6 @@ while (isInGame()) {
   const SI = parseInt(readline()); // The index of the node on which the Skynet agent is positioned this turn
 
   const shortestPath = bfs(mesh, new Node(SI));
-  console.error(shortestPath.toString());
-  // Write an action using console.log()
-  // To debug: console.error('Debug messages...');
-  console.error(`Agent at ${SI}.`);
-
-  // Example: 0 1 are the indices of the nodes you wish to sever the link between
   shortestPath.severLastConnection();
 }
 
@@ -127,9 +121,8 @@ function bfs(mesh, root) {
     const path = q.shift();
 
     const node = path.end();
-    if (node.isExit) {
-      return path;
-    }
+
+    if (node.isExit) return path;
 
     for (const connection of node.connections) {
       q.push(new Path(...path.nodes, connection));
