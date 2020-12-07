@@ -50,7 +50,7 @@ while (isInGame()) {
 }
 
 function calculateThrust(carAngle, angleToTarget, distance) {
-  const maxThrust = 170;
+  const maxThrust = 180;
   const angleDiff = Math.abs(carAngle - angleToTarget);
   const checkpointWidth = 600;
   let thrust = maxThrust;
@@ -58,7 +58,7 @@ function calculateThrust(carAngle, angleToTarget, distance) {
   const far = 8 * checkpointWidth;
   const close = 6 * checkpointWidth;
 
-  const slow = 50;
+  const slow = 45;
 
   //if very far
   if (distance >= far) {
@@ -71,7 +71,7 @@ function calculateThrust(carAngle, angleToTarget, distance) {
   //if medium distance
   if (distance < far && distance > close) {
     //reduce speed the closer to the target, but increase it the more aligned
-    const modulation = (distance / (2 * far)) * (1 - angleDiff / 360);
+    const modulation = (distance / (2 * far)) * Math.pow(1 - angleDiff / 360, 2);
     console.error('medium', { modulation });
     thrust = maxThrust * modulation;
   }
@@ -79,7 +79,7 @@ function calculateThrust(carAngle, angleToTarget, distance) {
   //if close
   if (distance < close) {
     //reduce speed to closer you get to the target but increase the more aligned
-    const modulation = (distance / (2 * far)) * (1 - angleDiff / 360);
+    const modulation = (distance / (2 * far)) * Math.pow(1 - angleDiff / 360, 2);
     console.error('close', { modulation });
     thrust = maxThrust * modulation;
   }
