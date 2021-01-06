@@ -39,25 +39,16 @@ class Node {
     return child;
   }
 
-  isName() {
-    return !this.isNumber();
-  }
-
-  isNumber() {
-    return !isNaN(parseInt(this.id));
-  }
-
-  getPath() {
-    if (this.parent === null) {
-      return this.id;
-    }
-    return this.parent.getPath() + this.id;
-  }
-
+  /**
+   * The amount of nodes to be found (counting this node) when following all the
+   * connections.
+   *
+   * @returns {number}
+   */
   count() {
-    let c = 1;
+    let c = 1; //this node
     for (const node of this.nodes) {
-      c += node.count();
+      c += node.count(); //plus all the nodes under it
     }
 
     return c;
@@ -70,6 +61,9 @@ class Node {
 
 class ContactManager {
   constructor() {
+    //Create a ROOT node from which all nodes will descend from. This strategy
+    //allows to use the same logic for all digits of a telephone number when
+    //adding one and when counting how many nodes have been created.
     this.root = new Node('ROOT');
   }
 
@@ -83,7 +77,7 @@ class ContactManager {
   }
 
   count() {
-    return this.root.count() - 1; //we need to subtract the root node, since it doesn't count
+    return this.root.count() - 1; //we need to subtract the root node, since it doesn't count for the total
   }
 }
 
