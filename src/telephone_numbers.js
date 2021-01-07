@@ -68,9 +68,9 @@ class ContactManager {
   }
 
   add(telephone) {
-    let node = this.root.get(telephone[0]);
+    let node = this.root;
 
-    for (let i = 1; i < telephone.length; i++) {
+    for (let i = 0; i < telephone.length; i++) {
       let nextNode = node.get(telephone[i]);
       node = nextNode;
     }
