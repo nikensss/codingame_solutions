@@ -19,7 +19,10 @@ class Node {
    * @param {Node} node The node to connect to
    */
   add(node) {
-    this.nodes.push(node);
+    if (this.nodes[node.id]) {
+      throw new Error('Adding duplicates not allowed!');
+    }
+    this.nodes[node.id] = node;
     node.parent = this;
   }
 
@@ -31,12 +34,10 @@ class Node {
    * @param {number} id The id of the node to be retrieved
    */
   get(id) {
-    let child = this.nodes.find((node) => node.id === id);
-    if (!child) {
-      child = new Node(id);
-      this.add(child);
+    if (!this.nodes[id]) {
+      this.add(new Node(id));
     }
-    return child;
+    return this.nodes[id];
   }
 
   /**
@@ -48,6 +49,7 @@ class Node {
   count() {
     let c = 1; //this node
     for (const node of this.nodes) {
+      if (!node) continue;
       c += node.count(); //plus all the nodes under it
     }
 
