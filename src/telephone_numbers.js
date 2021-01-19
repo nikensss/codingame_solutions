@@ -66,7 +66,7 @@ class ContactManager {
     //Create a ROOT node from which all nodes will descend from. This strategy
     //allows to use the same logic for all digits of a telephone number when
     //adding one and when counting how many nodes have been created.
-    this.root = new Node('ROOT');
+    this.root = new Node(null);
   }
 
   add(telephone) {
