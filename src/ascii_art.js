@@ -1,38 +1,41 @@
-class Alphabet {
-  constructor(letterWidth, letterHeight, alphabet) {
-    if (letterHeight !== alphabet.length) {
-      throw new Error('Letter height and alphabet length do not match!');
+class AlphabetRow {
+  constructor(row, letterWidth) {
+    this.row = row;
+    this.letterWidth = letterWidth;
+  }
+
+  getCharactersFor(letter) {
+    return this.row.substring(
+      this.getCharacterOffset(letter),
+      this.getCharacterOffset(letter) + this.letterWidth
+    );
+  }
+
+  getCharacterOffset(character) {
+    if (this.isAlphabetical(character)) {
+      return (character.toUpperCase().charCodeAt(0) - 'A'.charCodeAt(0)) * this.letterWidth;
     }
-    this.width = letterWidth;
-    this.height = letterHeight;
-    //an array of strings
+    return this.getCharacterOffset('Z') + this.letterWidth;
+  }
+
+  isAlphabetical(character) {
+    return /[a-z]/i.test(character);
+  }
+}
+class Alphabet {
+  constructor(alphabet) {
     this.alphabet = alphabet;
   }
 
   build(string) {
     let result = '';
     for (const row of this.alphabet) {
-      for (const char of string) {
-        result += row.substring(
-          this.getCharacterOffset(char),
-          this.getCharacterOffset(char) + this.width
-        );
+      for (const letter of string) {
+        result += row.getCharactersFor(letter);
       }
       result += '\n';
     }
     return result;
-  }
-
-  getCharacterOffset(character) {
-    if (this.isAlphabetical(character)) {
-      return (character.toUpperCase().charCodeAt(0) - 'A'.charCodeAt(0)) * this.width;
-    } else {
-      return this.getCharacterOffset('Z') + this.width;
-    }
-  }
-
-  isAlphabetical(character) {
-    return /[a-z]/i.test(character);
   }
 }
 
@@ -43,12 +46,9 @@ const textToCompose = readline();
 const rows = [];
 for (let i = 0; i < letterHeight; i++) {
   const ROW = readline();
-  rows.push(ROW);
+  rows.push(new AlphabetRow(ROW, letterWidth));
 }
 
-const alphabet = new Alphabet(letterWidth, letterHeight, rows);
+const alphabet = new Alphabet(rows);
 
-// Write an answer using console.log()
-// To debug: console.error('Debug messages...');
-console.error('Building ' + textToCompose);
 console.log(alphabet.build(textToCompose));
