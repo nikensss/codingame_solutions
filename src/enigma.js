@@ -1,10 +1,26 @@
-Number.prototype.mod = function (b) {
-  return ((this % b) + b) % b;
-};
+Object.defineProperties(Number.prototype, {
+  mod: {
+    configurable: false,
+    enumerable: true,
+    writable: false,
+    value: function (b) {
+      return ((this % b) + b) % b;
+    }
+  },
+  abs: {
+    configurable: false,
+    enumerable: true,
+    writable: false,
+    value: function () {
+      return Math.abs(this);
+    }
+  }
+});
 
 class CaesarShift {
   constructor(shifting) {
     this.shifting = shifting;
+    this.step = 1;
   }
 
   static get Z_ORDINAL() {
@@ -19,42 +35,47 @@ class CaesarShift {
     return CaesarShift.Z_ORDINAL - CaesarShift.A_ORDINAL + 1;
   }
 
+  getCharCodeFor(char) {
+    return (
+      (char.codePointAt(0) + this.shifting - CaesarShift.A_ORDINAL).mod(
+        CaesarShift.SHIFTING_MODULO
+      ) + CaesarShift.A_ORDINAL
+    );
+  }
+
   shift(character) {
-    const charCode =
-      (character.codePointAt(0) + this.shifting - CaesarShift.A_ORDINAL).mod(
-        CaesarShift.SHIFTING_MODULO
-      ) + CaesarShift.A_ORDINAL;
-    return String.fromCharCode(charCode);
+    return String.fromCharCode(this.getCharCodeFor(character));
   }
 
-  unshift(character) {
-    const charCode =
-      (character.codePointAt(0) - this.shifting - CaesarShift.A_ORDINAL).mod(
-        CaesarShift.SHIFTING_MODULO
-      ) + CaesarShift.A_ORDINAL;
-    return String.fromCharCode(charCode);
-  }
-
-  encode(message) {
-    const originalShift = this.shifting;
+  process(message) {
+    const shifting = this.shifting;
     let result = '';
     for (const letter of message) {
       result += this.shift(letter);
-      this.shifting += 1;
+      this.shifting += this.step;
     }
-    this.shifting = originalShift;
+    this.shifting = shifting;
     return result;
   }
 
+  forwards() {
+    this.shifting = this.shifting.abs();
+    this.step = 1;
+  }
+
+  encode(message) {
+    this.forwards();
+    return this.process(message);
+  }
+
+  backwards() {
+    this.shifting = -this.shifting.abs();
+    this.step = -1;
+  }
+
   decode(message) {
-    const originalShifting = this.shifting;
-    let result = '';
-    for (const letter of message) {
-      result += this.unshift(letter);
-      this.shifting += 1;
-    }
-    this.shifting = originalShifting;
-    return result;
+    this.backwards();
+    return this.process(message);
   }
 }
 
@@ -127,7 +148,7 @@ const rotors = [];
 for (let i = 0; i < 3; i++) {
   rotors.push(new Rotor(readline()));
 }
-const message = readline();
+const msg = readline();
 const enigma = new Enigma(caesar, rotors);
-console.error(`Doing ${operation} on ${message}`);
-console.log(enigma.do(operation, message));
+console.error(`Doing ${operation} on ${msg}`);
+console.log(enigma.do(operation, msg));
