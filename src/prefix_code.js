@@ -1,21 +1,9 @@
-class Decoder {
-  constructor() {
-    this.codes = new Map();
-  }
-
-  set(code, letter) {
-    this.codes.set(code, letter);
-  }
-
+class Decoder extends Map {
   get(code) {
     if (!this.has(code)) {
       throw new Error('Unknown code');
     }
-    return this.codes.get(code);
-  }
-
-  has(code) {
-    return this.codes.has(code);
+    return super.get(code);
   }
 
   decode(code) {
@@ -41,6 +29,7 @@ class Decoder {
     return result;
   }
 }
+
 const encoder = new Decoder();
 const n = parseInt(readline());
 for (let i = 0; i < n; i++) {
