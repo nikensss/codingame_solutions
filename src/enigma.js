@@ -84,49 +84,72 @@ class Rotor {
     this.substitution = substitution;
   }
 
-  getOffsetFor(character) {
+  getSubstitutionOffsetFor(character) {
     return character.codePointAt(0) - 'A'.codePointAt(0);
   }
 
+  encodeLetter(letter) {
+    return this.substitution[this.getSubstitutionOffsetFor(letter)];
+  }
+
+  encode(m) {
+    return m.split('').reduce((t, c) => t + this.encodeLetter(c), '');
+    // let result = '';
+    // for (const letter of message) {
+    //   result += this.encodeLetter(letter);
+    // }
+    // return result;
+  }
+
+  getCharCodeFor(character) {
+    return this.substitution.indexOf(character) + 'A'.codePointAt(0);
+  }
+
+  decodeLetter(letter) {
+    return String.fromCharCode(this.getCharCodeFor(letter));
+  }
+
+  decode(m) {
+    return m.split('').reduce((t, c) => t + this.decodeLetter(c), '');
+    // let result = '';
+    // for (const letter of message) {
+    //   result += this.decodeLetter(letter);
+    // }
+    // return result;
+  }
+}
+
+class RotorSystem {
+  constructor() {
+    this.rotors = [];
+  }
+
+  addRotor(rotor) {
+    this.rotors.push(rotor);
+  }
+
   encode(message) {
-    let result = '';
-    for (const letter of message) {
-      result += this.substitution[this.getOffsetFor(letter)];
-    }
-    return result;
+    return this.rotors.reduce((t, c) => c.encode(t), message);
   }
 
   decode(message) {
-    let result = '';
-    for (const letter of message) {
-      const charCode = this.substitution.indexOf(letter) + 'A'.codePointAt(0);
-      result += String.fromCharCode(charCode);
-    }
-    return result;
+    return this.rotors.reduceRight((t, c) => c.decode(t), message);
   }
 }
 
 class Enigma {
-  constructor(caesar, rotors) {
+  constructor(caesar, rotorSystem) {
     this.caesar = caesar;
-    this.rotors = rotors;
+    this.rotorSystem = rotorSystem;
   }
 
   encode(message) {
-    let result = this.caesar.encode(message);
-    for (const rotor of this.rotors) {
-      result = rotor.encode(result);
-    }
-    return result;
+    const result = this.caesar.encode(message);
+    return this.rotorSystem.encode(result);
   }
 
   decode(message) {
-    let result = message;
-    this.rotors.reverse();
-    for (const rotor of this.rotors) {
-      result = rotor.decode(result);
-    }
-    this.rotors.reverse();
+    const result = this.rotorSystem.decode(message);
     return this.caesar.decode(result);
   }
 
@@ -144,11 +167,11 @@ class Enigma {
 
 const operation = readline();
 const caesar = new CaesarShift(parseInt(readline()));
-const rotors = [];
+const rotorSystem = new RotorSystem();
 for (let i = 0; i < 3; i++) {
-  rotors.push(new Rotor(readline()));
+  rotorSystem.addRotor(new Rotor(readline()));
 }
 const msg = readline();
-const enigma = new Enigma(caesar, rotors);
+const enigma = new Enigma(caesar, rotorSystem);
 console.error(`Doing ${operation} on ${msg}`);
 console.log(enigma.do(operation, msg));
