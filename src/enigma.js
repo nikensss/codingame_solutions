@@ -17,12 +17,7 @@ Object.defineProperties(Number.prototype, {
   }
 });
 
-class CaesarShift {
-  constructor(shifting) {
-    this.shifting = shifting;
-    this.step = 1;
-  }
-
+class LetterShifter {
   static get Z_ORDINAL() {
     return 'Z'.codePointAt(0);
   }
@@ -32,50 +27,49 @@ class CaesarShift {
   }
 
   static get SHIFTING_MODULO() {
-    return CaesarShift.Z_ORDINAL - CaesarShift.A_ORDINAL + 1;
+    return LetterShifter.Z_ORDINAL - LetterShifter.A_ORDINAL + 1;
   }
 
-  getCharCodeFor(char) {
+  static getCharCodeFor(letter, shifting) {
     return (
-      (char.codePointAt(0) + this.shifting - CaesarShift.A_ORDINAL).mod(
-        CaesarShift.SHIFTING_MODULO
-      ) + CaesarShift.A_ORDINAL
+      (letter.codePointAt(0) + shifting - LetterShifter.A_ORDINAL).mod(
+        LetterShifter.SHIFTING_MODULO
+      ) + LetterShifter.A_ORDINAL
     );
   }
 
-  shift(character) {
-    return String.fromCharCode(this.getCharCodeFor(character));
+  static shift(letter, shifting) {
+    return String.fromCharCode(LetterShifter.getCharCodeFor(letter, shifting));
+  }
+}
+class CaesarShift {
+  constructor(shifting) {
+    this.shifting = shifting;
   }
 
-  process(message) {
-    const shifting = this.shifting;
+  static get FORWARDS() {
+    return 1;
+  }
+
+  static get BACKWARDS() {
+    return -1;
+  }
+
+  process(message, shifting, step) {
     let result = '';
     for (const letter of message) {
-      result += this.shift(letter);
-      this.shifting += this.step;
+      result += LetterShifter.shift(letter, shifting);
+      shifting += step;
     }
-    this.shifting = shifting;
     return result;
   }
 
-  forwards() {
-    this.shifting = this.shifting.abs();
-    this.step = 1;
-  }
-
   encode(message) {
-    this.forwards();
-    return this.process(message);
-  }
-
-  backwards() {
-    this.shifting = -this.shifting.abs();
-    this.step = -1;
+    return this.process(message, this.shifting, CaesarShift.FORWARDS);
   }
 
   decode(message) {
-    this.backwards();
-    return this.process(message);
+    return this.process(message, -this.shifting, CaesarShift.BACKWARDS);
   }
 }
 
@@ -92,13 +86,13 @@ class Rotor {
     return this.substitution[this.getSubstitutionOffsetFor(letter)];
   }
 
-  encode(m) {
-    return m.split('').reduce((t, c) => t + this.encodeLetter(c), '');
-    // let result = '';
-    // for (const letter of message) {
-    //   result += this.encodeLetter(letter);
-    // }
-    // return result;
+  encode(message) {
+    // return m.split('').reduce((t, c) => t + this.encodeLetter(c), '');
+    let result = '';
+    for (const letter of message) {
+      result += this.encodeLetter(letter);
+    }
+    return result;
   }
 
   getCharCodeFor(character) {
@@ -109,13 +103,13 @@ class Rotor {
     return String.fromCharCode(this.getCharCodeFor(letter));
   }
 
-  decode(m) {
-    return m.split('').reduce((t, c) => t + this.decodeLetter(c), '');
-    // let result = '';
-    // for (const letter of message) {
-    //   result += this.decodeLetter(letter);
-    // }
-    // return result;
+  decode(message) {
+    // return m.split('').reduce((t, c) => t + this.decodeLetter(c), '');
+    let result = '';
+    for (const letter of message) {
+      result += this.decodeLetter(letter);
+    }
+    return result;
   }
 }
 
