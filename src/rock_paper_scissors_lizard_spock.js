@@ -24,7 +24,7 @@ class Contest {
     if (
       !Array.isArray(players) ||
       players.length <= 1 ||
-      players.some((p) => p.constructor !== Player)
+      players.some((p) => !(p instanceof Player))
     ) {
       throw new Error('Invalid players. Must be an array with at least 2 elements!');
     }
@@ -73,7 +73,7 @@ class Contest {
  */
 class Match {
   constructor(a, b) {
-    if (a.constructor !== Player || b.constructor !== Player) {
+    if (!(a instanceof Player) || !(b instanceof Player)) {
       throw new TypeError('Instances of the Player class must be provided!');
     }
 
@@ -132,7 +132,7 @@ class Player {
   }
 
   fight(player) {
-    if (player.constructor !== Player) {
+    if (!(player instanceof Player)) {
       throw new TypeError('Instances of Player can only fight other instances of Player!');
     }
     //make characters fight
@@ -169,7 +169,7 @@ class Character {
   }
 
   fight(character) {
-    if (character.constructor !== Character) {
+    if (!(character instanceof Character)) {
       throw new TypeError('Instances of Character can only fight other instances of Character!');
     }
 
@@ -209,9 +209,8 @@ class CharacterFactory {
         return new Character(LIZARD, 'Lizard', [SPOCK, PAPER]);
       case SPOCK:
         return new Character(SPOCK, 'Lizard', [SCISSORS, ROCK]);
-      default:
-        throw new Error(`Unknown characterId: ${id}`);
     }
+    throw new Error(`Unknown characterId: ${id}`);
   }
 }
 

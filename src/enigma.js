@@ -42,6 +42,7 @@ class LetterShifter {
     return String.fromCharCode(LetterShifter.getCharCodeFor(letter, shifting));
   }
 }
+
 class CaesarShift {
   constructor(shifting) {
     this.shifting = shifting;
@@ -87,7 +88,7 @@ class Rotor {
   }
 
   encode(message) {
-    // return m.split('').reduce((t, c) => t + this.encodeLetter(c), '');
+    // return [...message].reduce((t, c) => t + this.encodeLetter(c), '');
     let result = '';
     for (const letter of message) {
       result += this.encodeLetter(letter);
@@ -104,7 +105,7 @@ class Rotor {
   }
 
   decode(message) {
-    // return m.split('').reduce((t, c) => t + this.decodeLetter(c), '');
+    // return [...message].reduce((t, c) => t + this.decodeLetter(c), '');
     let result = '';
     for (const letter of message) {
       result += this.decodeLetter(letter);
