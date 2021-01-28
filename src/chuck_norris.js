@@ -1,50 +1,19 @@
-/**
- * Auto-generated code below aims at helping you parse
- * the standard input according to the problem statement.
- **/
-
 function toBitString(string) {
-  return string
-    .split('')
-    .map((c) => c.charCodeAt(0).toString(2).padStart(7, '0'))
-    .join('');
+  return [...string].map((c) => c.charCodeAt(0).toString(2).padStart(7, '0')).join('');
+}
+
+function blockToChuckNorrisNotation(block) {
+  const sequenceStart = block[0] === '0' ? '00' : '0';
+  return sequenceStart + ' ' + '0'.repeat(block.length);
 }
 
 function toChuckNorrisNotation(bitString) {
-  let result = '';
-  const ZERO = '0';
-  const ONE = '1';
-  const bits = bitString.split('');
-  let groups = [];
-  let current = '';
-  for (const bit of bits) {
-    if (current[0] === bit) {
-      current += bit;
-    } else {
-      groups.push(current);
-      current = bit;
-    }
-  }
-  groups.push(current);
-  groups = groups.filter((g) => g.length > 0);
-
-  for (const group of groups) {
-    if (group[0] === ONE) {
-      result += ' 0 ';
-    } else if (group[0] === ZERO) {
-      result += ' 00 ';
-    } else {
-      throw new Error('Not 1 or 0: ' + group[0]);
-    }
-    result += '0'.repeat(group.length);
-  }
-
-  return result.trim();
+  return bitString
+    .match(/(1+|0+)/g) //match will return an array for each sequence of 0's and 1's
+    .map(blockToChuckNorrisNotation) //we map each block to their Chuck Norris notation
+    .join(' '); //we concatenate each Chuck Norris notation block with spaces
 }
 
 const MESSAGE = readline();
 
-// Write an answer using console.log()
-// To debug: console.error('Debug messages...');
-console.error(MESSAGE);
 console.log(toChuckNorrisNotation(toBitString(MESSAGE)));
