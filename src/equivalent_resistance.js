@@ -61,7 +61,7 @@ class Resistor {
   }
 }
 
-class Token {
+class CircuitToken {
   #t;
 
   constructor(t) {
@@ -118,7 +118,7 @@ class Circuit {
   }
 
   setCircuit(circuit = '') {
-    this.#circuit = circuit.split(' ').map((c) => new Token(c));
+    this.#circuit = circuit.split(' ').map((c) => new CircuitToken(c));
     this.#r = null;
   }
 
@@ -164,7 +164,7 @@ class Circuit {
   /**
    * Given the input Token, a Resistor is returned with the same id.
    *
-   * @param {Token} token The Token with the name of the desired Resistor.
+   * @param {CircuitToken} token The Token with the name of the desired Resistor.
    * @returns {Resistor} The desired Resistor if any match.
    */
   getResistor(token) {
@@ -178,7 +178,7 @@ class Circuit {
    * Gets all the Resistors in this block. If there are inner blocks, these are
    * converted to their equivalent Resistor.
    *
-   * @param {Token[]} circuit The Tokens representing the circuit
+   * @param {CircuitToken[]} circuit The Tokens representing the circuit
    * @returns {Resistor[]} The Resistors of the current block
    */
   getBlockResistors(circuit) {
